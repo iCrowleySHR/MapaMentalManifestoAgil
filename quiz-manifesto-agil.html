@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz — Manifesto Ágil</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d0e12;
+    --surface: #15161c;
+    --surface2: #1c1d26;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.14);
+    --accent: #6ee7b7;
+    --accent2: #34d399;
+    --accent-dim: rgba(110,231,183,0.12);
+    --accent-dim2: rgba(110,231,183,0.06);
+    --text: #f0f0f4;
+    --text2: #9395a5;
+    --text3: #5a5c6e;
+    --red: #f87171;
+    --red-dim: rgba(248,113,113,0.12);
+    --green: #6ee7b7;
+    --green-dim: rgba(110,231,183,0.12);
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem 4rem;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 500px;
+    background: radial-gradient(ellipse at center, rgba(110,231,183,0.07) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── HEADER ── */
+  header {
+    width: 100%;
+    max-width: 720px;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .eyebrow {
+    display: inline-block;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-dim);
+    border: 1px solid rgba(110,231,183,0.2);
+    padding: 5px 14px;
+    border-radius: 99px;
+    margin-bottom: 1.2rem;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 0.8rem;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .subtitle {
+    font-size: 15px;
+    color: var(--text2);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    width: 100%;
+    max-width: 720px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .stat-pill {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 99px;
+    padding: 6px 14px;
+    font-size: 13px;
+    color: var(--text2);
+  }
+
+  .stat-pill .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .stat-pill strong { color: var(--text); font-weight: 500; }
+
+  .progress-wrap {
+    flex: 1;
+    height: 4px;
+    background: var(--surface2);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    border-radius: 99px;
+    transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+    width: 0%;
+  }
+
+  /* ── QUESTION CARD ── */
+  .card {
+    width: 100%;
+    max-width: 720px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem 2rem 1.5rem;
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.3s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .q-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 1rem;
+  }
+
+  .q-text {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+  }
+
+  /* ── OPTIONS ── */
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.5rem; }
+
+  .opt {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 13px 16px;
+    font-size: 14px;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .opt:hover:not(:disabled) {
+    border-color: var(--border2);
+    background: rgba(255,255,255,0.04);
+    transform: translateX(3px);
+  }
+
+  .opt:disabled { cursor: default; }
+
+  .opt-letter {
+    width: 26px; height: 26px;
+    border-radius: var(--radius-sm);
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+    color: var(--text3);
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .opt.correct {
+    border-color: rgba(110,231,183,0.4);
+    background: var(--green-dim);
+  }
+  .opt.correct .opt-letter {
+    background: var(--accent);
+    color: #0d0e12;
+  }
+
+  .opt.wrong {
+    border-color: rgba(248,113,113,0.4);
+    background: var(--red-dim);
+  }
+  .opt.wrong .opt-letter {
+    background: var(--red);
+    color: #0d0e12;
+  }
+
+  /* ── FEEDBACK ── */
+  .feedback {
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    margin-bottom: 1.5rem;
+    display: none;
+  }
+  .feedback.show { display: block; animation: fadeUp 0.2s ease; }
+  .feedback.ok { background: var(--green-dim); border: 1px solid rgba(110,231,183,0.2); color: #a7f3d0; }
+  .feedback.ok::before { content: '✓  '; font-weight: 700; color: var(--accent); }
+  .feedback.err { background: var(--red-dim); border: 1px solid rgba(248,113,113,0.2); color: #fca5a5; }
+  .feedback.err::before { content: '✗  '; font-weight: 700; color: var(--red); }
+
+  /* ── NAV ── */
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .btn {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border-radius: var(--radius-sm);
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--text2);
+  }
+
+  .btn:hover:not(:disabled) { background: var(--surface2); color: var(--text); }
+  .btn:disabled { opacity: 0.3; cursor: default; }
+
+  .btn-next {
+    background: var(--accent);
+    color: #0d0e12;
+    border-color: var(--accent);
+  }
+  .btn-next:hover:not(:disabled) { background: var(--accent2); border-color: var(--accent2); color: #0d0e12; }
+
+  /* ── SCORE SCREEN ── */
+  .score-screen {
+    width: 100%;
+    max-width: 720px;
+    text-align: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 3rem 2rem;
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.4s ease;
+    display: none;
+  }
+
+  .score-circle {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 3px solid var(--accent);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    background: var(--accent-dim2);
+    box-shadow: 0 0 40px rgba(110,231,183,0.12);
+  }
+
+  .score-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .score-total {
+    font-size: 13px;
+    color: var(--text3);
+    margin-top: 3px;
+  }
+
+  .score-pct {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .score-msg {
+    font-size: 15px;
+    color: var(--text2);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .score-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    max-width: 360px;
+    margin: 0 auto 2rem;
+  }
+
+  .score-stat {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+  }
+
+  .score-stat-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .score-stat-val.green { color: var(--green); }
+  .score-stat-val.red { color: var(--red); }
+
+  .score-stat-lbl {
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+  }
+
+  .btn-restart {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--accent);
+    color: #0d0e12;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 12px 32px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-restart:hover { background: var(--accent2); }
+
+  /* ── DECORATIVE ── */
+  .deco-num {
+    position: absolute;
+    right: 2rem;
+    top: 1.5rem;
+    font-family: 'Syne', sans-serif;
+    font-size: 80px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.03);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  @media (max-width: 520px) {
+    .card { padding: 1.5rem 1.25rem 1.25rem; }
+    .q-text { font-size: 16px; }
+    .stats-bar { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">60 perguntas</div>
+  <h1>Manifesto <span>Ágil</span></h1>
+  <p class="subtitle">Teste seus conhecimentos sobre valores, princípios e história do Manifesto Ágil de 2001.</p>
+</header>
+
+<div class="stats-bar" id="statsBar">
+  <div class="stat-pill"><div class="dot"></div><strong id="qNum">1</strong>&nbsp;/ 60</div>
+  <div class="progress-wrap"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="stat-pill"><div class="dot" style="background:#6ee7b7"></div>Acertos: <strong id="scoreCount">0</strong></div>
+</div>
+
+<div class="card" id="quizCard">
+  <div class="deco-num" id="decoNum">01</div>
+  <div class="q-label" id="qLabel">Pergunta 1 de 60</div>
+  <div class="q-text" id="qText"></div>
+  <div class="options" id="options"></div>
+  <div class="feedback" id="feedback"></div>
+  <div class="nav">
+    <button class="btn" id="btnPrev" onclick="go(-1)" disabled>← Anterior</button>
+    <button class="btn btn-next" id="btnNext" onclick="go(1)" disabled>Próxima →</button>
+  </div>
+</div>
+
+<div class="score-screen" id="scoreScreen">
+  <div class="score-circle">
+    <div class="score-num" id="finalScore">0</div>
+    <div class="score-total">de 60</div>
+  </div>
+  <div class="score-pct" id="finalPct">0%</div>
+  <div class="score-msg" id="finalMsg"></div>
+  <div class="score-grid">
+    <div class="score-stat">
+      <div class="score-stat-val green" id="finalRight">0</div>
+      <div class="score-stat-lbl">Corretas</div>
+    </div>
+    <div class="score-stat">
+      <div class="score-stat-val red" id="finalWrong">0</div>
+      <div class="score-stat-lbl">Erradas</div>
+    </div>
+  </div>
+  <button class="btn-restart" onclick="restart()">Recomeçar quiz</button>
+</div>
+
+<script>
+const questions = [
+  { q: "Quantos valores principais compõem o Manifesto Ágil?", opts: ["2","4","6","8"], ans: 1, exp: "O Manifesto Ágil possui exatamente 4 valores fundamentais." },
+  { q: "Quantos princípios compõem o Manifesto Ágil?", opts: ["8","10","12","14"], ans: 2, exp: "O Manifesto Ágil possui 12 princípios orientadores." },
+  { q: "Em qual ano o Manifesto Ágil foi criado?", opts: ["1999","2001","2003","2005"], ans: 1, exp: "O Manifesto Ágil foi publicado em fevereiro de 2001, em Snowbird, Utah." },
+  { q: "Onde foi assinado o Manifesto Ágil?", opts: ["Silicon Valley, CA","Austin, TX","Snowbird, Utah","Seattle, WA"], ans: 2, exp: "A reunião aconteceu em Snowbird, Utah, EUA." },
+  { q: "Quantos signatários originais assinou o Manifesto Ágil?", opts: ["12","15","17","20"], ans: 2, exp: "17 desenvolvedores de software assinaram o Manifesto Ágil originalmente." },
+  { q: "Qual é o primeiro valor do Manifesto Ágil?", opts: ["Colaboração com o cliente","Indivíduos e interações","Software funcionando","Resposta a mudanças"], ans: 1, exp: "Indivíduos e interações mais que processos e ferramentas." },
+  { q: "O que o Manifesto Ágil valoriza mais do que processos e ferramentas?", opts: ["Software funcionando","Documentação abrangente","Indivíduos e interações","Seguir um plano"], ans: 2, exp: "Primeiro valor: Indivíduos e interações mais que processos e ferramentas." },
+  { q: "O que o Manifesto Ágil valoriza mais do que documentação abrangente?", opts: ["Indivíduos e interações","Software funcionando","Colaboração com o cliente","Resposta a mudanças"], ans: 1, exp: "Segundo valor: Software funcionando mais que documentação abrangente." },
+  { q: "O que o Manifesto Ágil valoriza mais do que negociação de contratos?", opts: ["Software funcionando","Indivíduos e interações","Colaboração com o cliente","Resposta a mudanças"], ans: 2, exp: "Terceiro valor: Colaboração com o cliente mais que negociação de contratos." },
+  { q: "O que o Manifesto Ágil valoriza mais do que seguir um plano?", opts: ["Software funcionando","Colaboração com o cliente","Indivíduos e interações","Resposta a mudanças"], ans: 3, exp: "Quarto valor: Resposta a mudanças mais que seguir um plano." },
+  { q: "Os 4 valores do Manifesto Ágil indicam que os itens à direita:", opts: ["Não têm valor algum","Têm valor, mas os da esquerda são mais valorizados","São mais importantes que os da esquerda","Devem ser eliminados"], ans: 1, exp: "O Manifesto diz explicitamente: há valor nos itens à direita, mas valorizamos mais os itens à esquerda." },
+  { q: "Qual princípio ágil fala sobre a entrega contínua de software?", opts: ["Entregar software funcionando com frequência","Acolher mudanças de requisitos","Pessoas de negócio e devs trabalhando juntos","Projetos surgem de indivíduos motivados"], ans: 0, exp: "Primeiro princípio: entregar software funcionando com frequência, de poucas semanas a poucos meses." },
+  { q: "De acordo com o Manifesto Ágil, qual é a medida primária de progresso?", opts: ["Documentação produzida","Número de reuniões","Software funcionando","Velocidade da equipe"], ans: 2, exp: "Software funcionando é a medida primária de progresso." },
+  { q: "O Manifesto Ágil preconiza que mudanças nos requisitos:", opts: ["Devem ser evitadas","São bem-vindas, mesmo tarde no desenvolvimento","Precisam ser documentadas formalmente","Devem ser aprovadas por um comitê"], ans: 1, exp: "Segundo princípio: mudanças nos requisitos são bem-vindas, mesmo tarde no desenvolvimento." },
+  { q: "Qual é a frequência de entrega de software recomendada pelo Manifesto Ágil?", opts: ["Anual","Semestral","De semanas a alguns meses","Somente quando completo"], ans: 2, exp: "De poucas semanas a poucos meses, com preferência à escala de tempo menor." },
+  { q: "Segundo o Manifesto Ágil, quem deve trabalhar junto diariamente?", opts: ["Gerentes e diretores","Pessoas de negócio e desenvolvedores","Designers e testadores","Clientes e fornecedores"], ans: 1, exp: "Pessoas de negócio e desenvolvedores devem trabalhar juntos diariamente durante todo o projeto." },
+  { q: "Qual é o método mais eficiente de transmitir informação segundo o Manifesto Ágil?", opts: ["E-mail","Documentação detalhada","Conversa face a face","Relatórios semanais"], ans: 2, exp: "O método mais eficiente e eficaz é a conversa face a face." },
+  { q: "O Manifesto Ágil diz que projetos bem-sucedidos surgem de:", opts: ["Bons processos","Indivíduos motivados","Contratos bem definidos","Ferramentas avançadas"], ans: 1, exp: "Projetos surgem de indivíduos motivados — dê a eles ambiente e suporte necessários." },
+  { q: "Segundo o Manifesto Ágil, os melhores requisitos e designs emergem de:", opts: ["Comitês de arquitetura","Times auto-organizáveis","Gerentes de projeto","Analistas de sistemas"], ans: 1, exp: "Os melhores requisitos, arquiteturas e designs emergem de times auto-organizáveis." },
+  { q: "O princípio de 'desenvolvimento sustentável' sugere que:", opts: ["O ritmo pode ser infinito","Patrocinadores, devs e usuários devem manter ritmo constante indefinidamente","O trabalho deve ser acelerado","Sprints curtos aumentam produtividade"], ans: 1, exp: "Patrocinadores, desenvolvedores e usuários devem manter um ritmo constante indefinidamente." },
+  { q: "Qual princípio ágil trata de excelência técnica e bom design?", opts: ["Times auto-organizáveis","Atenção contínua à excelência técnica e bom design","Simplicidade é essencial","Ritmo sustentável"], ans: 1, exp: "A atenção contínua à excelência técnica e bom design aumenta a agilidade." },
+  { q: "O que o Manifesto Ágil diz sobre simplicidade?", opts: ["Ela deve ser evitada em sistemas complexos","A arte de maximizar o trabalho não realizado é essencial","Simplicidade aumenta a burocracia","Projetos simples falham mais"], ans: 1, exp: "Simplicidade — a arte de maximizar a quantidade de trabalho não realizado — é essencial." },
+  { q: "Em intervalos regulares, o time deve:", opts: ["Adicionar mais membros","Revisar o contrato com o cliente","Refletir sobre como se tornar mais eficaz e ajustar comportamento","Criar novos documentos de requisitos"], ans: 2, exp: "12º princípio: Em intervalos regulares o time reflete e ajusta seu comportamento." },
+  { q: "O que 'agilidade de negócios' representa no contexto ágil?", opts: ["Mudança rápida de fornecedores","A capacidade de responder a mudanças vantajosas para o cliente","Contratar desenvolvedores mais rápidos","Eliminar processos de gestão"], ans: 1, exp: "Agilidade de negócios é a capacidade de responder a mudanças para obter vantagem competitiva." },
+  { q: "Qual metodologia NÃO esteve diretamente representada no encontro que criou o Manifesto Ágil?", opts: ["Extreme Programming (XP)","Scrum","Waterfall","Crystal"], ans: 2, exp: "Waterfall é o modelo cascata tradicional — representava exatamente o que os criadores queriam superar." },
+  { q: "Ken Schwaber e Jeff Sutherland, criadores do Scrum, assinaram o Manifesto Ágil?", opts: ["Não, criaram manifesto separado","Sim, ambos foram signatários originais","Apenas Ken Schwaber assinou","Apenas Jeff Sutherland assinou"], ans: 1, exp: "Sim, ambos são signatários originais do Manifesto Ágil de 2001." },
+  { q: "Kent Beck, criador do XP, assinou o Manifesto Ágil?", opts: ["Não","Sim","Ele apenas contribuiu com ideias","Ele se recusou a assinar"], ans: 1, exp: "Kent Beck foi um dos 17 signatários originais do Manifesto Ágil." },
+  { q: "O Manifesto Ágil foi desenvolvido como reação a qual tipo de abordagem?", opts: ["Desenvolvimento iterativo","Métodos pesados e orientados a processos (ex.: cascata)","Desenvolvimento open source","Programação funcional"], ans: 1, exp: "O manifesto surgiu como reação a metodologias pesadas e orientadas a documentação e processos rígidos." },
+  { q: "Qual princípio ágil fala sobre satisfação do cliente?", opts: ["Nossa maior prioridade é satisfazer o cliente através da entrega contínua","Os melhores designs emergem de times auto-organizáveis","Simplicidade é essencial","A conversa face a face é mais eficiente"], ans: 0, exp: "Primeiro princípio: Nossa maior prioridade é satisfazer o cliente através da entrega contínua e adiantada de software com valor." },
+  { q: "Qual é o papel da confiança no Manifesto Ágil?", opts: ["Não é mencionada","Contratos garantem confiança","Construa projetos em torno de indivíduos motivados e confie neles","A confiança deve ser auditada"], ans: 2, exp: "O princípio diz: dê às equipes o ambiente e suporte necessários e confie nelas para fazer o trabalho." },
+  { q: "O Manifesto Ágil menciona qual das seguintes práticas específicas?", opts: ["Daily Scrum","TDD (Test-Driven Development)","Pair Programming","Nenhuma prática específica"], ans: 3, exp: "O Manifesto Ágil não prescreve práticas específicas — é um conjunto de valores e princípios de alto nível." },
+  { q: "O que o termo 'software funcionando' significa no Manifesto Ágil?", opts: ["Software 100% sem bugs","Software que pode ser demonstrado e agrega valor ao cliente","Software com documentação completa","Software com cobertura total de testes"], ans: 1, exp: "Software funcionando refere-se a software que pode ser demonstrado e entrega valor real ao cliente." },
+  { q: "Segundo o Manifesto Ágil, como o ambiente afeta os projetos?", opts: ["Não tem impacto significativo","O ambiente e suporte adequados são essenciais para o sucesso","Apenas as ferramentas importam","Ambientes físicos são irrelevantes no mundo digital"], ans: 1, exp: "O princípio diz: dê à equipe o ambiente e suporte necessários, e confie nelas para fazer o trabalho." },
+  { q: "O que os criadores do Manifesto Ágil tinham em comum?", opts: ["Todos trabalhavam na mesma empresa","Todos eram acadêmicos","Eram praticantes e consultores de desenvolvimento de software","Todos eram gerentes de projeto"], ans: 2, exp: "Os 17 signatários eram praticantes experientes — desenvolvedores, coaches e consultores de software." },
+  { q: "Qual a relação entre Manifesto Ágil e Scrum?", opts: ["Scrum criou o Manifesto Ágil","O Manifesto Ágil é baseado no Scrum","O Scrum é um framework que implementa os princípios do Manifesto Ágil","São a mesma coisa"], ans: 2, exp: "O Scrum é um dos frameworks ágeis que implementa os valores e princípios do Manifesto Ágil." },
+  { q: "Qual valor ágil prioriza a adaptação a mudanças?", opts: ["Indivíduos e interações","Software funcionando","Colaboração com o cliente","Resposta a mudanças mais que seguir um plano"], ans: 3, exp: "Quarto valor: Resposta a mudanças mais que seguir um plano." },
+  { q: "A palavra 'Ágil' com 'A' maiúsculo refere-se a:", opts: ["Movimento filosófico geral","O conjunto de valores definidos no Manifesto de 2001","Apenas ao Scrum","Apenas ao XP"], ans: 1, exp: "Com A maiúsculo, Ágil refere-se ao movimento e valores definidos no Manifesto Ágil de 2001." },
+  { q: "Qual é o papel da auto-organização no Manifesto Ágil?", opts: ["Não é mencionada","Times auto-organizáveis produzem os melhores resultados","Auto-organização elimina líderes","Times auto-organizáveis substituem o cliente"], ans: 1, exp: "Os melhores requisitos, arquiteturas e designs emergem de times auto-organizáveis." },
+  { q: "O que o Manifesto Ágil diz sobre contratos?", opts: ["Contratos são a base do sucesso","Negociação de contratos é valorizada, porém menos que colaboração com o cliente","Contratos devem ser eliminados","Contratos garantem qualidade"], ans: 1, exp: "Terceiro valor: colaboração com o cliente mais que negociação de contratos." },
+  { q: "Qual afirmação sobre o Manifesto Ágil é CORRETA?", opts: ["Ele prescreve um processo específico","Ele substitui completamente toda documentação","Valoriza itens à esquerda MAS reconhece valor nos itens à direita","É obrigatório para todas as empresas de software"], ans: 2, exp: "O Manifesto deixa claro que há valor nos itens à direita — eles simplesmente são menos priorizados." },
+  { q: "Qual princípio ágil é diretamente relacionado à redução de desperdício?", opts: ["Software funcionando é a medida primária","Simplicidade — maximizar o trabalho não realizado — é essencial","Entrega contínua","Times auto-organizáveis"], ans: 1, exp: "Simplicidade como arte de maximizar o trabalho não realizado está diretamente ligada à eliminação de desperdício." },
+  { q: "De acordo com o Manifesto Ágil, o cliente deve:", opts: ["Ser envolvido apenas no início e no fim","Colaborar ao longo do projeto","Apenas assinar contratos","Ser evitado durante o desenvolvimento"], ans: 1, exp: "Colaboração com o cliente é valorizada durante todo o processo, não apenas em marcos formais." },
+  { q: "Segundo o Manifesto Ágil, como lidar com mudanças de requisitos no final do projeto?", opts: ["Recusar e seguir o plano original","Cobrar custos adicionais ao cliente","Acolhê-las, pois garantem vantagem competitiva ao cliente","Documentar para o próximo projeto"], ans: 2, exp: "Segundo princípio: mudanças são bem-vindas mesmo tarde no desenvolvimento, para vantagem competitiva do cliente." },
+  { q: "Qual é a postura do Manifesto Ágil em relação a processos e ferramentas?", opts: ["São mais importantes que pessoas","Têm valor, mas indivíduos e interações são priorizados","Devem ser eliminados","São o único caminho para o sucesso"], ans: 1, exp: "Processos e ferramentas têm valor — mas indivíduos e interações são mais valorizados." },
+  { q: "Alistair Cockburn, criador do Crystal, foi signatário do Manifesto Ágil?", opts: ["Não, ele criou um manifesto concorrente","Sim, foi um dos 17 signatários originais","Ele participou mas não assinou","Ele adicionou sua assinatura em 2003"], ans: 1, exp: "Alistair Cockburn foi um dos 17 signatários originais do Manifesto Ágil." },
+  { q: "Martin Fowler é conhecido no contexto ágil por:", opts: ["Criar o Scrum","Criar o Kanban","Ser signatário do Manifesto Ágil e por seu trabalho em refatoração","Criar o DSDM"], ans: 2, exp: "Martin Fowler é um dos 17 signatários e é reconhecido por seu trabalho em refatoração e padrões." },
+  { q: "O Manifesto Ágil aborda qual aspecto de gestão de pessoas?", opts: ["Avaliações de desempenho","Indivíduos motivados com ambiente e confiança adequados","Estrutura hierárquica","Bônus por produtividade"], ans: 1, exp: "O princípio menciona construir projetos em torno de indivíduos motivados, com ambiente e suporte adequados." },
+  { q: "Qual é a relação entre Manifesto Ágil e Lean?", opts: ["São idênticos","O Lean surgiu do Manifesto Ágil","Ambos compartilham princípios de eliminação de desperdício e entrega de valor, mas têm origens distintas","Não têm nenhuma relação"], ans: 2, exp: "Lean (origem na manufatura japonesa) e Ágil compartilham valores como eliminação de desperdício e foco em valor, mas têm origens independentes." },
+  { q: "Qual princípio do Manifesto Ágil trata sobre reflexão e melhoria?", opts: ["Entrega contínua de software","Em intervalos regulares o time reflete e ajusta comportamento","Times auto-organizáveis","Conversa face a face"], ans: 1, exp: "12º princípio: Em intervalos regulares, o time reflete sobre como se tornar mais eficaz e ajusta o comportamento." },
+  { q: "O princípio de excelência técnica implica que:", opts: ["Velocidade é mais importante que qualidade","A qualidade técnica e o bom design aumentam a agilidade a longo prazo","Testes são opcionais em times ágeis","Refatoração deve ser evitada"], ans: 1, exp: "A atenção contínua à excelência técnica e bom design aumenta a agilidade — qualidade e velocidade se complementam." },
+  { q: "Qual afirmação sobre documentação no Manifesto Ágil é CORRETA?", opts: ["Documentação deve ser eliminada completamente","Documentação tem valor, mas software funcionando é mais valorizado","Documentação abrangente é preferida ao software funcionando","O manifesto é neutro em relação à documentação"], ans: 1, exp: "Software funcionando é mais valorizado que documentação abrangente — mas documentação tem seu valor." },
+  { q: "O conceito de 'sprint' reflete qual princípio ágil?", opts: ["Colaboração com o cliente","Entrega frequente de software funcionando em ciclos curtos","Documentação incremental","Times auto-organizáveis"], ans: 1, exp: "Sprints refletem o princípio de entregar software funcionando com frequência, de semanas a meses." },
+  { q: "Segundo o Manifesto Ágil, o que é mais valorizado: seguir um plano ou responder a mudanças?", opts: ["Seguir um plano é sempre melhor","Responder a mudanças é mais valorizado","Depende do projeto","Ambos têm o mesmo peso"], ans: 1, exp: "Quarto valor: Resposta a mudanças mais que seguir um plano." },
+  { q: "Jim Highsmith foi signatário do Manifesto Ágil?", opts: ["Não","Sim","Ele participou como observador","Assinou em edição posterior"], ans: 1, exp: "Jim Highsmith foi um dos 17 signatários originais e é criador do método Adaptive Software Development (ASD)." },
+  { q: "O Manifesto Ágil inclui princípios sobre qual aspecto de liderança?", opts: ["Liderança autocrática","Equipes precisam de gerentes tradicionais","As melhores arquiteturas emergem de times auto-organizáveis","Liderança deve ser centralizada"], ans: 2, exp: "Times auto-organizáveis que geram os melhores requisitos, arquiteturas e designs são uma forma de liderança distribuída." },
+  { q: "Qual das seguintes afirmações é um PRINCÍPIO do Manifesto Ágil?", opts: ["Use apenas metodologias certificadas","Nossa maior prioridade é satisfazer o cliente através da entrega contínua de software com valor","Evite mudanças de requisitos a todo custo","Documente antes de desenvolver"], ans: 1, exp: "Esse é exatamente o primeiro princípio do Manifesto Ágil." },
+  { q: "O que o Manifesto Ágil estabelece sobre o ritmo de trabalho a longo prazo?", opts: ["Equipes devem trabalhar ao máximo para entregar mais rápido","Horas extras são incentivadas","O desenvolvimento deve ser sustentável — ritmo constante indefinidamente","Sprints curtos com alta intensidade são preferíveis"], ans: 2, exp: "Desenvolvimento sustentável: patrocinadores, desenvolvedores e usuários mantendo um ritmo constante indefinidamente." },
+  { q: "Ward Cunningham, criador da Wiki, assinou o Manifesto Ágil?", opts: ["Não","Sim, foi signatário original","Ele se recusou por discordâncias filosóficas","Assinou em 2005"], ans: 1, exp: "Ward Cunningham foi um dos 17 signatários originais do Manifesto Ágil." },
+  { q: "Qual é a origem do nome 'Ágil' para o movimento?", opts: ["Foi proposto por professores universitários","O grupo escolheu 'Ágil' durante o encontro em Snowbird","Veio de uma publicação acadêmica de 1995","Foi sugerido por uma empresa de consultoria"], ans: 1, exp: "O nome 'Ágil' foi escolhido durante o encontro em Snowbird em 2001, após debate entre os participantes." },
+  { q: "Qual princípio está mais relacionado ao conceito de 'feedback rápido'?", opts: ["Simplicidade é essencial","Entrega frequente de software funcionando","Times auto-organizáveis","Excelência técnica"], ans: 1, exp: "Entregar software funcionando com frequência permite obter feedback rápido do cliente e ajustar o curso." },
+  { q: "O Manifesto Ágil é aplicável apenas a desenvolvimento de software?", opts: ["Sim, é exclusivo para software","Não, seus princípios foram adaptados a outras áreas como marketing e RH","Sim, conforme declarado no próprio manifesto","Não, foi criado originalmente para manufatura"], ans: 1, exp: "Embora criado para software, os valores e princípios ágeis foram amplamente adotados em outras áreas como marketing, RH e gestão." },
+];
+
+const letters = ['A','B','C','D'];
+let current = 0;
+let score = 0;
+let answered = new Array(questions.length).fill(null);
+
+function render() {
+  const q = questions[current];
+  const isAnswered = answered[current] !== null;
+  const n = current + 1;
+
+  document.getElementById('qNum').textContent = n;
+  document.getElementById('scoreCount').textContent = score;
+  document.getElementById('progressFill').style.width = (n / questions.length * 100) + '%';
+  document.getElementById('qLabel').textContent = `Pergunta ${n} de ${questions.length}`;
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('decoNum').textContent = String(n).padStart(2,'0');
+
+  const optionsEl = document.getElementById('options');
+  optionsEl.innerHTML = q.opts.map((o, i) => {
+    let cls = 'opt';
+    if (isAnswered) {
+      if (i === q.ans) cls += ' correct';
+      else if (i === answered[current] && answered[current] !== q.ans) cls += ' wrong';
+    }
+    return `<button class="${cls}" onclick="choose(${i})" ${isAnswered ? 'disabled' : ''}>
+      <span class="opt-letter">${letters[i]}</span>${o}
+    </button>`;
+  }).join('');
+
+  const fb = document.getElementById('feedback');
+  if (isAnswered) {
+    const ok = answered[current] === q.ans;
+    fb.className = 'feedback show ' + (ok ? 'ok' : 'err');
+    fb.textContent = q.exp;
+  } else {
+    fb.className = 'feedback';
+    fb.textContent = '';
+  }
+
+  document.getElementById('btnPrev').disabled = current === 0;
+  const btnNext = document.getElementById('btnNext');
+  if (current === questions.length - 1) {
+    btnNext.textContent = 'Ver resultado';
+    btnNext.disabled = !isAnswered;
+  } else {
+    btnNext.textContent = 'Próxima →';
+    btnNext.disabled = !isAnswered;
+  }
+}
+
+function choose(i) {
+  if (answered[current] !== null) return;
+  answered[current] = i;
+  if (i === questions[current].ans) score++;
+  render();
+}
+
+function go(dir) {
+  if (dir === 1 && current === questions.length - 1) {
+    showScore(); return;
+  }
+  current = Math.max(0, Math.min(questions.length - 1, current + dir));
+  render();
+}
+
+function showScore() {
+  document.getElementById('quizCard').style.display = 'none';
+  document.getElementById('statsBar').style.display = 'none';
+  const ss = document.getElementById('scoreScreen');
+  ss.style.display = 'block';
+  const pct = Math.round(score / questions.length * 100);
+  document.getElementById('finalScore').textContent = score;
+  document.getElementById('finalPct').textContent = pct + '%';
+  document.getElementById('finalRight').textContent = score;
+  document.getElementById('finalWrong').textContent = questions.length - score;
+  let msg = pct >= 80 ? "Excelente! Você domina o Manifesto Ágil!" : pct >= 60 ? "Bom resultado! Continue estudando os princípios ágeis." : "Continue praticando — o Manifesto Ágil tem muita profundidade!";
+  document.getElementById('finalMsg').textContent = msg;
+}
+
+function restart() {
+  current = 0; score = 0; answered = new Array(questions.length).fill(null);
+  document.getElementById('scoreScreen').style.display = 'none';
+  document.getElementById('quizCard').style.display = 'block';
+  document.getElementById('statsBar').style.display = 'flex';
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
