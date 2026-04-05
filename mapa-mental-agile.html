@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signatários do Manifesto Ágil · 2001</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d0f12;
+    --surface: #14171c;
+    --border: rgba(255,255,255,0.07);
+    --text-primary: #e8e4d9;
+    --text-secondary: #7a7870;
+    --text-muted: #4a4844;
+
+    --scrum:   #6C63D4;
+    --scrum-l: #a09ae0;
+    --scrum-d: #3C3489;
+    --xp:      #1DB87A;
+    --xp-l:    #5DCAA5;
+    --xp-d:    #0F6E56;
+    --outros:  #8B7CF6;
+    --outros-l:#c4bdfa;
+    --outros-d:#534AB7;
+    --tecnico: #5CA832;
+    --tecnico-l:#97C459;
+    --tecnico-d:#3B6D11;
+    --pragm:   #D4831A;
+    --pragm-l: #EF9F27;
+    --pragm-d: #854F0B;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    padding: 40px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 44px;
+    position: relative;
+  }
+  .header-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 400;
+    color: var(--text-primary);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  .header h1 em {
+    font-style: italic;
+    color: var(--scrum-l);
+  }
+  .header-sub {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+  .header-line {
+    width: 1px;
+    height: 32px;
+    background: var(--border);
+    margin: 24px auto 0;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    justify-content: center;
+    margin-bottom: 36px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+  .legend-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* Map wrapper */
+  .map-wrapper {
+    width: 100%;
+    max-width: 860px;
+    position: relative;
+  }
+
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    overflow: visible;
+  }
+
+  /* SVG node styles */
+  .node { cursor: pointer; }
+  .node rect {
+    transition: filter 0.2s ease, opacity 0.2s ease;
+  }
+  .node:hover rect {
+    filter: brightness(1.2);
+  }
+
+  /* Detail panel */
+  .detail-panel {
+    margin-top: 28px;
+    width: 100%;
+    max-width: 860px;
+    min-height: 80px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    transition: border-color 0.3s ease;
+  }
+  .detail-panel.active { border-color: rgba(255,255,255,0.15); }
+  .detail-avatar {
+    width: 42px; height: 42px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    flex-shrink: 0;
+    letter-spacing: 0.02em;
+    transition: background 0.3s ease;
+  }
+  .detail-body { flex: 1; }
+  .detail-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 4px;
+    transition: color 0.3s ease;
+  }
+  .detail-tag {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .detail-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+  .detail-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-style: italic;
+    align-self: center;
+  }
+
+  /* Footer */
+  footer {
+    margin-top: 48px;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <p class="header-eyebrow">Snowbird, Utah · Fevereiro 2001</p>
+  <h1>Manifesto para o<br><em>Desenvolvimento Ágil</em></h1>
+  <p class="header-sub">17 signatários · 5 áreas de contribuição</p>
+  <div class="header-line"></div>
+</header>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:var(--scrum)"></div> Scrum</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--xp)"></div> XP</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--outros)"></div> Outros frameworks</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--tecnico)"></div> Práticas técnicas</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--pragm)"></div> Pragmatismo</div>
+</div>
+
+<div class="map-wrapper">
+<svg viewBox="0 0 760 620" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <filter id="glow-scrum"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="glow-xp"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+</defs>
+
+<!-- ── connection lines ── -->
+<!-- Scrum lines -->
+<line x1="192" y1="88"  x2="350" y2="290" stroke="#6C63D4" stroke-width="0.6" opacity="0.35"/>
+<line x1="192" y1="148" x2="350" y2="295" stroke="#6C63D4" stroke-width="0.6" opacity="0.35"/>
+<line x1="192" y1="208" x2="350" y2="300" stroke="#6C63D4" stroke-width="0.6" opacity="0.35"/>
+<!-- XP lines -->
+<line x1="568" y1="88"  x2="410" y2="290" stroke="#1DB87A" stroke-width="0.6" opacity="0.35"/>
+<line x1="568" y1="148" x2="410" y2="295" stroke="#1DB87A" stroke-width="0.6" opacity="0.35"/>
+<line x1="568" y1="208" x2="410" y2="300" stroke="#1DB87A" stroke-width="0.6" opacity="0.35"/>
+<line x1="568" y1="268" x2="410" y2="305" stroke="#1DB87A" stroke-width="0.6" opacity="0.35"/>
+<!-- Outros frameworks lines -->
+<line x1="192" y1="338" x2="350" y2="305" stroke="#8B7CF6" stroke-width="0.6" opacity="0.35"/>
+<line x1="192" y1="398" x2="350" y2="310" stroke="#8B7CF6" stroke-width="0.6" opacity="0.35"/>
+<line x1="192" y1="458" x2="350" y2="315" stroke="#8B7CF6" stroke-width="0.6" opacity="0.35"/>
+<line x1="192" y1="518" x2="350" y2="318" stroke="#8B7CF6" stroke-width="0.6" opacity="0.35"/>
+<!-- Técnicas lines -->
+<line x1="568" y1="358" x2="410" y2="308" stroke="#5CA832" stroke-width="0.6" opacity="0.35"/>
+<line x1="568" y1="418" x2="410" y2="312" stroke="#5CA832" stroke-width="0.6" opacity="0.35"/>
+<line x1="568" y1="478" x2="410" y2="316" stroke="#5CA832" stroke-width="0.6" opacity="0.35"/>
+<line x1="568" y1="538" x2="410" y2="318" stroke="#5CA832" stroke-width="0.6" opacity="0.35"/>
+<!-- Pragmatismo lines -->
+<line x1="310" y1="515" x2="365" y2="335" stroke="#D4831A" stroke-width="0.6" opacity="0.35"/>
+<line x1="450" y1="515" x2="395" y2="335" stroke="#D4831A" stroke-width="0.6" opacity="0.35"/>
+
+<!-- ══════════════════════════════════════
+     CENTER NODE
+════════════════════════════════════════ -->
+<g id="center">
+  <rect x="290" y="268" width="180" height="60" rx="12"
+        fill="#1a1d22" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+  <text x="380" y="291" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Serif Display',serif" font-size="15" fill="#e8e4d9">Manifesto Ágil</text>
+  <text x="380" y="312" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="10" fill="#4a4844" letter-spacing="0.1em">SNOWBIRD · 2001</text>
+</g>
+
+<!-- ══════════════════════════════════════
+     SCRUM (top-left, purple)
+════════════════════════════════════════ -->
+<!-- Jeff Sutherland -->
+<g class="node" onclick="show('Jeff Sutherland','JS','scrum','Scrum','Co-criador do Scrum. Desenvolveu o framework nos anos 90 inspirado em estudos sobre equipes de alto desempenho no rugby e na natureza.')">
+  <rect x="36" y="62" width="156" height="52" rx="9" fill="#1c1a2e" stroke="#6C63D4" stroke-width="0.8"/>
+  <text x="114" y="83" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="12" font-weight="500" fill="#c4bdfa">Jeff Sutherland</text>
+  <text x="114" y="100" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="10" fill="#6C63D4">Scrum</text>
+</g>
+<!-- Ken Schwaber -->
+<g class="node" onclick="show('Ken Schwaber','KS','scrum','Scrum','Co-criador do Scrum. Formalizou o framework e co-fundou a Scrum Alliance, responsável pela certificação global do método.')">
+  <rect x="36" y="122" width="156" height="52" rx="9" fill="#1c1a2e" stroke="#6C63D4" stroke-width="0.8"/>
+  <text x="114" y="143" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="12" font-weight="500" fill="#c4bdfa">Ken Schwaber</text>
+  <text x="114" y="160" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="10" fill="#6C63D4">Scrum</text>
+</g>
+<!-- Mike Beedle -->
+<g class="node" onclick="show('Mike Beedle','MB','scrum','Scrum / Enterprise Scrum','Desenvolveu o Enterprise Scrum, expandindo o Scrum para contextos organizacionais maiores, com foco em escala corporativa.')">
+  <rect x="36" y="182" width="156" height="52" rx="9" fill="#1c1a2e" stroke="#6C63D4" stroke-width="0.8"/>
+  <text x="114" y="203" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="12" font-weight="500" fill="#c4bdfa">Mike Beedle</text>
+  <text x="114" y="220" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="10" fill="#6C63D4">Enterprise Scrum</text>
+</g>
+
+<!-- ══════════════════════════════════════
+     XP (top-right, green)
+════════════════════════════════════════ -->
+<!-- Kent Beck -->
+<g class="node" onclick="show('Kent Beck','KB','xp','XP / TDD','Criador do Extreme Programming (XP) e pioneiro do Test-Driven Development (TDD). Seu trabalho transformou a forma como software é desenvolvido e testado.')">
+  <rect x="568" y="62" width="156" height="52" rx="9" fill="#0e1f18" stroke="#1DB87A" stroke-width="0.8"/>
+  <text x="646" y="83" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="12" font-weight="500" fill="#9FE1CB">Kent Beck</text>
+  <text x="646" y="100" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="10" fill="#1DB87A">XP / TDD</text>
+</g>
+<!-- Ron Jeffries -->
+<g class="node" onclick="show('Ron Jeffries','RJ','xp','Extreme Programming','Um dos três co-criadores do XP. Desenvolveu o conceito de User Stories e popularizou práticas como programação em par e integração contínua.')">
+  <rect x="568" y="122" width="156" height="52" rx="9" fill="#0e1f18" stroke="#1DB87A" stroke-width="0.8"/>
+  <text x="646" y="143" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="12" font-weight="500" fill="#9FE1CB">Ron Jeffries</text>
+  <text x="646" y="160" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="10" fill="#1DB87A">XP / User Stories</text>
+</g>
+<!-- James Grenning -->
+<g class="node" onclick="show('James Grenning','JG','xp','XP / Embarcados','Praticante de XP que expandiu o método para sistemas embarcados. Também é creditado como co-criador do Planning Poker para estimativas ágeis.')">
+  <rect x="568" y="182" width="156" height="52" rx="9" fill="#0e1f18" stroke="#1DB87A" stroke-width="0.8"/>
+  <text x="646" y="203" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="12" font-weight="500" fill="#9FE1CB">James Grenning</text>
+  <text x="646" y="220" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="10" fill="#1DB87A">XP / Embarcados</text>
+</g>
+<!-- Robert C. Martin -->
+<g class="node" onclick="show('Robert C. Martin','RM','xp','Clean Code / XP','\"Uncle Bob\". Autor de Clean Code e criador dos princípios SOLID. Forte defensor de práticas técnicas de excelência dentro do XP.')">
+  <rect x="568" y="242" width="156" height="52" rx="9" fill="#0e1f18" stroke="#1DB87A" stroke-width="0.8"/>
+  <text x="646" y="261" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="12" font-weight="500" fill="#9FE1CB">Robert C. Martin</text>
+  <text x="646" y="278" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="10" fill="#1DB87A">Clean Code / SOLID</text>
+</g>
+
+<!-- ══════════════════════════════════════
+     OUTROS FRAMEWORKS (left, violet)
+════════════════════════════════════════ -->
+<!-- Arie van Bennekum -->
+<g class="node" onclick="show('Arie van Bennekum','AB','outros','DSDM','Representante do DSDM (Dynamic Systems Development Method), framework ágil europeu focado em entregas de negócio e timeboxing rigoroso.')">
+  <rect x="36" y="312" width="156" height="52" rx="9" fill="#1a1830" stroke="#8B7CF6" stroke-width="0.8"/>
+  <text x="114" y="333" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="11" font-weight="500" fill="#c4bdfa">Arie van Bennekum</text>
+  <text x="114" y="350" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="10" fill="#8B7CF6">DSDM</text>
+</g>
+<!-- Alistair Cockburn -->
+<g class="node" onclick="show('Alistair Cockburn','AC','outros','Crystal','Criador da família Crystal de metodologias, adaptáveis ao tamanho e criticidade do projeto. Também contribuiu com o conceito de Use Cases.')">
+  <rect x="36" y="372" width="156" height="52" rx="9" fill="#1a1830" stroke="#8B7CF6" stroke-width="0.8"/>
+  <text x="114" y="393" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="12" font-weight="500" fill="#c4bdfa">Alistair Cockburn</text>
+  <text x="114" y="410" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="10" fill="#8B7CF6">Crystal</text>
+</g>
+<!-- Jim Highsmith -->
+<g class="node" onclick="show('Jim Highsmith','JH','outros','Adaptive SW Development','Criador do Adaptive Software Development (ASD). Focado em projetos complexos e emergência adaptativa em ambientes de negócio caóticos.')">
+  <rect x="36" y="432" width="156" height="52" rx="9" fill="#1a1830" stroke="#8B7CF6" stroke-width="0.8"/>
+  <text x="114" y="453" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="12" font-weight="500" fill="#c4bdfa">Jim Highsmith</text>
+  <text x="114" y="470" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="10" fill="#8B7CF6">Adaptive SW Dev.</text>
+</g>
+<!-- Steve Mellor -->
+<g class="node" onclick="show('Steve Mellor','SM','outros','Model-Driven Development','Desenvolveu o Model-Driven Development (MDD). Focado em abstrações de alto nível e geração automática de código a partir de modelos.')">
+  <rect x="36" y="492" width="156" height="52" rx="9" fill="#1a1830" stroke="#8B7CF6" stroke-width="0.8"/>
+  <text x="114" y="513" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="12" font-weight="500" fill="#c4bdfa">Steve Mellor</text>
+  <text x="114" y="530" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="10" fill="#8B7CF6">Model-Driven Dev.</text>
+</g>
+
+<!-- ══════════════════════════════════════
+     PRÁTICAS TÉCNICAS (right, green)
+════════════════════════════════════════ -->
+<!-- Martin Fowler -->
+<g class="node" onclick="show('Martin Fowler','MF','tecnico','Refactoring / Padrões','Autor de Refactoring e UML Distilled. Chief Scientist da ThoughtWorks, com enorme influência em padrões de design e arquitetura de software.')">
+  <rect x="568" y="332" width="156" height="52" rx="9" fill="#121c0c" stroke="#5CA832" stroke-width="0.8"/>
+  <text x="646" y="353" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="12" font-weight="500" fill="#C0DD97">Martin Fowler</text>
+  <text x="646" y="370" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="10" fill="#5CA832">Refactoring / Padrões</text>
+</g>
+<!-- Ward Cunningham -->
+<g class="node" onclick="show('Ward Cunningham','WC','tecnico','Wiki / CRC Cards','Inventor da Wiki e dos CRC Cards. Cunhou o conceito de \"débito técnico\". Influência fundamental no movimento XP e na Web como a conhecemos.')">
+  <rect x="568" y="392" width="156" height="52" rx="9" fill="#121c0c" stroke="#5CA832" stroke-width="0.8"/>
+  <text x="646" y="413" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="12" font-weight="500" fill="#C0DD97">Ward Cunningham</text>
+  <text x="646" y="430" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="10" fill="#5CA832">Wiki / CRC Cards</text>
+</g>
+<!-- Jon Kern -->
+<g class="node" onclick="show('Jon Kern','JK','tecnico','Feature Driven Development','Engenheiro de software especializado em Feature Driven Development (FDD), framework ágil com foco em projetos grandes e times distribuídos.')">
+  <rect x="568" y="452" width="156" height="52" rx="9" fill="#121c0c" stroke="#5CA832" stroke-width="0.8"/>
+  <text x="646" y="473" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="12" font-weight="500" fill="#C0DD97">Jon Kern</text>
+  <text x="646" y="490" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="10" fill="#5CA832">Feature Driven Dev.</text>
+</g>
+<!-- Brian Marick -->
+<g class="node" onclick="show('Brian Marick','BM','tecnico','Testing / XP','Consultor de testes de software. Desenvolveu a matriz de testes ágeis (quadrantes de Marick) e influenciou profundamente a prática de testes em XP.')">
+  <rect x="568" y="512" width="156" height="52" rx="9" fill="#121c0c" stroke="#5CA832" stroke-width="0.8"/>
+  <text x="646" y="533" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="12" font-weight="500" fill="#C0DD97">Brian Marick</text>
+  <text x="646" y="550" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="10" fill="#5CA832">Testing / XP</text>
+</g>
+
+<!-- ══════════════════════════════════════
+     PRAGMATISMO (bottom-center, amber)
+════════════════════════════════════════ -->
+<!-- Andrew Hunt -->
+<g class="node" onclick="show('Andrew Hunt','AH','pragm','Pragmatic Programmer','Co-autor do livro The Pragmatic Programmer com Dave Thomas. Fundador da Pragmatic Bookshelf, influência enorme na cultura de boas práticas de código.')">
+  <rect x="224" y="489" width="158" height="52" rx="9" fill="#1e1508" stroke="#D4831A" stroke-width="0.8"/>
+  <text x="303" y="510" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="12" font-weight="500" fill="#FAC775">Andrew Hunt</text>
+  <text x="303" y="527" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="10" fill="#D4831A">Pragmatic Programmer</text>
+</g>
+<!-- Dave Thomas -->
+<g class="node" onclick="show('Dave Thomas','DT','pragm','Pragmatic Programmer','Co-autor de The Pragmatic Programmer. Evangelizador da linguagem Ruby e criador do Elixir. Defensor apaixonado de boas práticas de desenvolvimento.')">
+  <rect x="378" y="489" width="158" height="52" rx="9" fill="#1e1508" stroke="#D4831A" stroke-width="0.8"/>
+  <text x="457" y="510" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="12" font-weight="500" fill="#FAC775">Dave Thomas</text>
+  <text x="457" y="527" text-anchor="middle" dominant-baseline="central"
+        font-family="'DM Mono',monospace" font-size="10" fill="#D4831A">Pragmatic Programmer</text>
+</g>
+</svg>
+</div>
+
+<!-- Detail Panel -->
+<div class="detail-panel" id="detail-panel">
+  <span class="detail-hint">Clique em qualquer nome para ver detalhes</span>
+</div>
+
+<footer>
+  Manifesto para o Desenvolvimento Ágil de Software &nbsp;·&nbsp; agilemanifesto.org &nbsp;·&nbsp; 2001
+</footer>
+
+<script>
+const colors = {
+  scrum:   { bg: '#1c1a2e', border: '#6C63D4', avatar: '#6C63D4', avatarText: '#EEEDFE', name: '#c4bdfa', tag: '#6C63D4' },
+  xp:      { bg: '#0e1f18', border: '#1DB87A', avatar: '#1DB87A', avatarText: '#E1F5EE', name: '#9FE1CB', tag: '#1DB87A' },
+  outros:  { bg: '#1a1830', border: '#8B7CF6', avatar: '#8B7CF6', avatarText: '#EEEDFE', name: '#c4bdfa', tag: '#8B7CF6' },
+  tecnico: { bg: '#121c0c', border: '#5CA832', avatar: '#5CA832', avatarText: '#EAF3DE', name: '#C0DD97', tag: '#5CA832' },
+  pragm:   { bg: '#1e1508', border: '#D4831A', avatar: '#D4831A', avatarText: '#FAEEDA', name: '#FAC775', tag: '#D4831A' },
+};
+
+function show(name, initials, type, area, desc) {
+  const c = colors[type];
+  const panel = document.getElementById('detail-panel');
+  panel.classList.add('active');
+  panel.style.borderColor = c.border + '55';
+  panel.innerHTML = `
+    <div class="detail-avatar" style="background:${c.avatar}22;color:${c.avatar};border:1px solid ${c.avatar}44">${initials}</div>
+    <div class="detail-body">
+      <div class="detail-name" style="color:${c.name}">${name}</div>
+      <div class="detail-tag" style="color:${c.tag}">${area}</div>
+      <div class="detail-desc">${desc}</div>
+    </div>`;
+}
+</script>
+</body>
+</html>
